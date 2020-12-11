@@ -36,4 +36,13 @@ class API {
       }),
     );
   }
+
+  static Future getTokens(int id) {
+    return http.get(
+      url + 'tokens/' + id.toString(),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+  }
 }

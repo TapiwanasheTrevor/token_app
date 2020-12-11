@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:token_app/api/api.dart';
 import 'package:token_app/models/user.dart';
 import 'package:token_app/pages/home.dart';
@@ -117,12 +118,10 @@ class SignUpState extends State<SignUp> {
                           .register(name.text, email.text, meter.text,
                               number.text, password.text, cpassword.text)
                           .then((response) {
-                        print(response);
-
                         User user = User.fromJson(json.decode(response.body));
 
                         if (user.id != null) {
-                          //saveUserPrefs(userModel);
+                          saveUserPrefs(user);
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => HomePage()),
@@ -165,5 +164,15 @@ class SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  //save the user preferences
+  saveUserPrefs(User userModel) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> map = userModel.toMap();
+    await prefs.setInt('id', map["id"]);
+    await prefs.setString('name', map["name"]);
+    await prefs.setString('email', map["email"]);
+    await prefs.setString('number', map["number"]);
   }
 }
