@@ -46,6 +46,7 @@ class CardScreen extends StatelessWidget {
                             color: Colors.lightBlue[900],
                             size: 30,
                           ),
+                          onPressed: () {},
                         )
                       ],
                     ),

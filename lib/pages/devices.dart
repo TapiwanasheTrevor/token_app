@@ -1,11 +1,9 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:token_app/api/api.dart';
 import 'package:token_app/models/device.dart';
-import 'package:token_app/utils/AppConstant.dart';
 
 class Devices extends StatefulWidget {
   @override
@@ -23,7 +21,6 @@ class DeviceState extends State<Devices> {
 
   _fetchDevices() {
     API.getDevices().then((response) {
-
       Iterable list = jsonDecode(response.body);
       setState(() {
         _devices = list.map((model) => Device.fromJson(model)).toList();
@@ -65,7 +62,6 @@ class DeviceState extends State<Devices> {
                                 fontWeight: FontWeight.w300,
                                 fontStyle: FontStyle.italic),
                           ),
-                          
                           trailing: Text("${device.wattage.toString()} watts"),
                         ),
                         Divider(
@@ -73,9 +69,7 @@ class DeviceState extends State<Devices> {
                         ),
                       ],
                     ),
-                    onTap: () {
-
-                    },
+                    onTap: () {},
                   );
                 }),
       ),
