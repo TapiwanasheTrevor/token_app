@@ -1,7 +1,7 @@
 class Token {
   int id;
   int units;
-  int price;
+  String price;
   String token;
 
   Token({this.id, this.units, this.price, this.token});

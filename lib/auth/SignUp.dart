@@ -25,7 +25,6 @@ class SignUp extends StatefulWidget {
 class SignUpState extends State<SignUp> {
   TextEditingController name = new TextEditingController();
   TextEditingController email = new TextEditingController();
-  TextEditingController meter = new TextEditingController();
   TextEditingController number = new TextEditingController();
   TextEditingController password = new TextEditingController();
   TextEditingController cpassword = new TextEditingController();
@@ -79,14 +78,6 @@ class SignUpState extends State<SignUp> {
                   height: spacing_standard_new,
                 ),
                 EditText(
-                  text: "Meter Number",
-                  isPassword: false,
-                  mController: meter,
-                ),
-                SizedBox(
-                  height: spacing_standard_new,
-                ),
-                EditText(
                   text: theme10_password,
                   isSecure: true,
                   mController: password,
@@ -106,7 +97,6 @@ class SignUpState extends State<SignUp> {
                   onPressed: () {
                     if (name.text != "" &&
                         email.text != "" &&
-                        meter.text != "" &&
                         number.text != "" &&
                         password.text != "" &&
                         cpassword.text != "") {
@@ -115,8 +105,8 @@ class SignUpState extends State<SignUp> {
                       });
 
                       API
-                          .register(name.text, email.text, meter.text,
-                              number.text, password.text, cpassword.text)
+                          .register(name.text, email.text, number.text,
+                              password.text, cpassword.text)
                           .then((response) {
                         User user = User.fromJson(json.decode(response.body));
 

@@ -18,13 +18,5 @@ const profileImage = 'assets/images/profile.png';
 const isDarkModeOnPref = 'isDarkModeOnPref';
 const dateFormat = 'MMM dd, yyyy';
 
-const BaseUrl =
-    'http://tokens-env.eba-8x7myqti.us-east-2.elasticbeanstalk.com/api/';
-    
-const PlayStoreUrl =
-    'https://play.google.com/store/apps/details?id=com.iqonic.prokitflutter';
-const DocumentationUrl = 'https://iqonic.design/docs/product/prokit-flutter/';
-const ChangeLogsUrl =
-    'https://iqonic.design/docs/product/prokit-flutter/updates/change-logs/';
-
-const SampleImageUrl = 'https://www.gstatic.com/webp/gallery/1.jpg';
+const BaseUrl = 'http://172.20.10.5:8000/api/';
+const ImageUrl = 'http://172.20.10.5:8000/';

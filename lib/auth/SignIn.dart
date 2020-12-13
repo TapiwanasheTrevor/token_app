@@ -24,6 +24,8 @@ class SignIn extends StatefulWidget {
 class SignInState extends State<SignIn> {
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
+  bool _requesting = false;
+  bool _haserror = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +66,27 @@ class SignInState extends State<SignIn> {
                 mController: password,
               ),
               SizedBox(
+                height: 10,
+              ),
+              _haserror
+                  ? Text(
+                      "Invalid Credentials",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    )
+                  : SizedBox(
+                      height: 0.0,
+                    ),
+              SizedBox(
                 height: spacing_xlarge,
               ),
               AppButton(
                 onPressed: () {
+                  setState(() {
+                    _requesting = true;
+                  });
                   if (email.text != "" && password.text != "") {
                     API.login(email.text, password.text).then((response) {
                       User user = User.fromJson(json.decode(response.body));
@@ -77,10 +96,18 @@ class SignInState extends State<SignIn> {
                           context,
                           MaterialPageRoute(builder: (context) => HomePage()),
                         );
-                      } else {}
+                      } else {
+                        setState(() {
+                          _haserror = true;
+                          _requesting = false;
+                        });
+                      }
                     });
                   } else {
-                    print("error");
+                    setState(() {
+                      _haserror = true;
+                      _requesting = false;
+                    });
                   }
                 },
                 textContent: theme10_lbl_sign_in,
@@ -109,7 +136,17 @@ class SignInState extends State<SignIn> {
                     },
                   )
                 ],
-              )
+              ),
+              _requesting
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Center(child: CircularProgressIndicator()),
+                      ],
+                    )
+                  : SizedBox()
             ],
           ),
         ),

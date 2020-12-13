@@ -2,14 +2,12 @@ class User {
   int id;
   String name;
   String email;
-  String meter;
   String number;
 
   User({
     this.id,
     this.name,
     this.email,
-    this.meter,
     this.number,
   });
 
@@ -18,7 +16,6 @@ class User {
       id: json['id'],
       name: json['name'],
       email: json['email'],
-      meter: json['meter'],
       number: json['number'],
     );
   }
@@ -28,7 +25,6 @@ class User {
       "id": id,
       "name": name,
       "email": email,
-      "meter": meter,
       "number": number,
     };
   }
