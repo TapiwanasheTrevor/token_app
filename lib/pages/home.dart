@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:token_app/api/api.dart';
 import 'package:token_app/auth/SignIn.dart';
+import 'package:token_app/models/meter.dart';
 import 'package:token_app/models/user.dart';
+import 'package:token_app/pages/recharge.dart';
 import 'package:token_app/pages/transactions.dart';
 import 'package:token_app/utils/Constant.dart';
 import 'package:token_app/utils/Widget.dart';
@@ -20,7 +24,8 @@ class _HomePageState extends State<HomePage> {
   TextEditingController address = new TextEditingController();
   User user;
   bool _isfetching = true;
-  bool _refreshing = false;
+  List<Meter> _meters;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -28,6 +33,7 @@ class _HomePageState extends State<HomePage> {
     _fetchUser().then((data) {
       setState(() {
         user = data;
+        _fetchMeters(user.id);
         _isfetching = false;
       });
     });
@@ -43,6 +49,16 @@ class _HomePageState extends State<HomePage> {
     user.number = prefs.getString('number');
 
     return user;
+  }
+
+  _fetchMeters(int id) {
+    API.getMeters(id).then((response) {
+      Iterable list = json.decode(response.body);
+      setState(() {
+        _meters = list.map((model) => Meter.fromJson(model)).toList();
+        _isLoading = false;
+      });
+    });
   }
 
   @override
@@ -62,17 +78,7 @@ class _HomePageState extends State<HomePage> {
                       Icons.refresh,
                       color: Colors.white,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _refreshing = true;
-                        _fetchUser().then((data) {
-                          setState(() {
-                            user = data;
-                            _refreshing = false;
-                          });
-                        });
-                      });
-                    })
+                    onPressed: null)
               ],
             ),
             drawer: Drawer(
@@ -148,6 +154,7 @@ class _HomePageState extends State<HomePage> {
                         API
                             .addMeter(number.text, address.text, user.id)
                             .then((value) => {Navigator.pop(context)});
+                        _fetchMeters(user.id);
                       },
                     )
                   ],
@@ -157,9 +164,57 @@ class _HomePageState extends State<HomePage> {
               elevation: 0,
               child: Icon(Icons.add),
             ),
-            body: _refreshing
-                ? Center(child: Text("Refreshing..."))
-                : HomeScreen(),
+            body: _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    itemCount: _meters.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      Meter meter = _meters[index];
+                      return GestureDetector(
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(
+                                "${meter.number}",
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                "${meter.address}",
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w300,
+                                    fontStyle: FontStyle.italic),
+                              ),
+                              leading: Icon(Icons.power),
+                              trailing: CircleAvatar(
+                                radius: 8,
+                                backgroundColor: _meters[index].units > 0
+                                    ? _meters[index].units > 300
+                                        ? Colors.green
+                                        : Colors.orange
+                                    : Colors.red,
+                              ),
+                            ),
+                            Divider(
+                              height: 2.0,
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RechargeScreen(
+                                      meter: meter,
+                                    )),
+                          );
+                        },
+                      );
+                    }),
           );
   }
 }
