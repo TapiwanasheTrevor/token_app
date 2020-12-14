@@ -138,12 +138,7 @@ class SignUpState extends State<SignUp> {
                               try {
                                 User user =
                                     User.fromJson(json.decode(response.body));
-                                saveUserPrefs(user);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomePage()),
-                                );
+                                saveUserPrefs(user, context);
                               } on FormatException catch (e) {
                                 print('error caught: $e');
                                 setState(() {
@@ -212,12 +207,17 @@ class SignUpState extends State<SignUp> {
   }
 
   //save the user preferences
-  saveUserPrefs(User userModel) async {
+  saveUserPrefs(User userModel, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> map = userModel.toMap();
     await prefs.setInt('id', map["id"]);
     await prefs.setString('name', map["name"]);
     await prefs.setString('email', map["email"]);
     await prefs.setString('number', map["number"]);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
   }
 }

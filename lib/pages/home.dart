@@ -3,7 +3,6 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:token_app/api/api.dart';
 import 'package:token_app/auth/SignIn.dart';
-import 'package:token_app/models/device.dart';
 import 'package:token_app/models/user.dart';
 import 'package:token_app/pages/transactions.dart';
 import 'package:token_app/utils/Constant.dart';
@@ -21,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController address = new TextEditingController();
   User user;
   bool _isfetching = true;
+  bool _refreshing = false;
 
   @override
   void initState() {
@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     user.name = prefs.getString('name');
     user.email = prefs.getString('email');
     user.number = prefs.getString('number');
+
     return user;
   }
 
@@ -55,6 +56,24 @@ class _HomePageState extends State<HomePage> {
         : Scaffold(
             appBar: AppBar(
               title: Text("My Meters"),
+              actions: [
+                IconButton(
+                    icon: Icon(
+                      Icons.refresh,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _refreshing = true;
+                        _fetchUser().then((data) {
+                          setState(() {
+                            user = data;
+                            _refreshing = false;
+                          });
+                        });
+                      });
+                    })
+              ],
             ),
             drawer: Drawer(
               child: ListView(
@@ -138,7 +157,9 @@ class _HomePageState extends State<HomePage> {
               elevation: 0,
               child: Icon(Icons.add),
             ),
-            body: HomeScreen(),
+            body: _refreshing
+                ? Center(child: Text("Refreshing..."))
+                : HomeScreen(),
           );
   }
 }

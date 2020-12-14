@@ -91,11 +91,7 @@ class SignInState extends State<SignIn> {
                     API.login(email.text, password.text).then((response) {
                       User user = User.fromJson(json.decode(response.body));
                       if (user.id != null) {
-                        saveUserPrefs(user);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        );
+                        saveUserPrefs(user, context);
                       } else {
                         setState(() {
                           _haserror = true;
@@ -155,12 +151,17 @@ class SignInState extends State<SignIn> {
   }
 
   //save the user preferences
-  saveUserPrefs(User userModel) async {
+  saveUserPrefs(User userModel, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> map = userModel.toMap();
     await prefs.setInt('id', map["id"]);
     await prefs.setString('name', map["name"]);
     await prefs.setString('email', map["email"]);
     await prefs.setString('number', map["number"]);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
   }
 }
