@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localregex/localregex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:token_app/api/api.dart';
 import 'package:token_app/models/user.dart';
@@ -26,7 +27,8 @@ class SignInState extends State<SignIn> {
   TextEditingController password = new TextEditingController();
   bool _requesting = false;
   bool _haserror = false;
-
+ final localregex = LocalRegex();
+ 
   @override
   Widget build(BuildContext context) {
     changeStatusColor(t10_white);
@@ -88,6 +90,7 @@ class SignInState extends State<SignIn> {
                     _requesting = true;
                   });
                   if (email.text != "" && password.text != "") {
+                    
                     API.login(email.text, password.text).then((response) {
                       User user = User.fromJson(json.decode(response.body));
                       if (user.id != null) {
@@ -99,6 +102,8 @@ class SignInState extends State<SignIn> {
                         });
                       }
                     });
+
+
                   } else {
                     setState(() {
                       _haserror = true;

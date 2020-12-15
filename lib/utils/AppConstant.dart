@@ -18,5 +18,5 @@ const profileImage = 'assets/images/profile.png';
 const isDarkModeOnPref = 'isDarkModeOnPref';
 const dateFormat = 'MMM dd, yyyy';
 
-const BaseUrl = 'http://172.20.10.5:8000/api/';
-const ImageUrl = 'http://172.20.10.5:8000/';
+const BaseUrl = 'http://kakimedia.co.zw/api/';
+const ImageUrl = 'http://kakimedia.co.zw/';
